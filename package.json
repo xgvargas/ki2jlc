@@ -1,0 +1,37 @@
+{
+  "name": "ki2jlc",
+  "version": "0.0.1",
+  "description": "Convert BOM and POS from kicad to JLCPCB",
+  "scripts": {
+    "build": "coffee -cb index.coffee",
+    "prepublish": "yarn build"
+  },
+  "bin": {
+    "ki2jlc": "./bin/ki2jlc"
+  },
+  "main": "index.js",
+  "author": "Gustavo Vargas",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "coffeescript": "^2.5.1"
+  },
+  "dependencies": {
+    "minimist": "^1.2.0",
+    "papaparse": "^5.1.1"
+  }
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:xgvargas/ki2jlc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xgvargas/ki2jlc/issues"
+  },
+  "homepage": "https://github.com/xgvargas/ki2jlc#ki2jlc",
+  "keywords": [
+    "kicad",
+    "bom",
+    "jlc",
+    "pos"
+  ]
+}
