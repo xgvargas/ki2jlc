@@ -22,7 +22,11 @@ First we need to create the BOM and POS files, here is how to generate the files
 
 ### BOM
 
-With the schematic open use the BOM button and select the `bom2csv` plugin. Your command line should look like this: `xsltproc -o "%O-BOM.csv" "<path-used-in-your-system-to-the-plugins>\plugins\bom2csv.xsl" "%I"`.
+First you need to be sure each part that is supposed to be assembled by JLCPCB have a `LCSC` field defined for it. To do so you can edit the part by opening its properties panel and include a new line named `LCSC` and for its value copy the SKU code from JLCPCB for that part. You may create properties with other names like SKU for Mouser and/or digikey and they will be ignored, for this processes we only care for `LCSC` codes since they are the codes used by JLCPCB.
+
+> Tip: You can use the `Edit symbol fields` button on the toolbar to check/edit all fields for all symbols in your schematic.
+
+With the schematic open use the `BOM` button and select the `bom2csv` plugin. Your command line should look like this: `xsltproc -o "%O-BOM.csv" "<path-used-in-your-system-to-the-plugins>\plugins\bom2csv.xsl" "%I"`.
 
 Note that is possible to edit the `-o` parameter to create a template for the generated csv file. Here we have added the suffix `-BOM.csv` to the `%O`, that expands to the projects name. So a project called `test` will create a BOM called `test-BOM.csv`. You may tweak this as needed.
 
@@ -48,6 +52,8 @@ For this just execute
 ki2jlc -b your-bom-file.csv -p the-pos-file.csv
 ```
 This will create `your-bom-file-JLC.csv` and `the-pos-file-JLC.csv` files, they are ready to be uploaded to JLCPCB.
+
+Notice that, since this files are intended to be uploaded to JLCPCB for assembly service, both BOM and POS files only include parts that have a `LCSC` SKU code defined for it (they are the parts they will solder at the end), any other part are suppressed from the generated files.
 
 Wondering way the second step is not always easy? Well, because it's a work-in-progress. This application will know how to fix the rotation for footprints already added to the rules list. Any unknown footprint will simply be forwarded to the result file as is.
 

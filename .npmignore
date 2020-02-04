@@ -1,3 +1,5 @@
 *.coffee
 coffeelint.json
 .editorconfig
+yarn-error.log
+*.csv
