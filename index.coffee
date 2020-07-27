@@ -36,9 +36,9 @@ fixRules = [
     ['D_SOD-123',                0  ]
     ['CP_Elec_',                 0  ]  # generic
     ['SOT-23-5',                 0  ]
-    ['SOT-23',                   0  ]
+    ['SOT-23',                   180  ]
     ['SC-89',                    0  ]
-    ['SOIC-',                    90 ]  # generic
+    ['SOIC-',                    -90 ]  # generic
     ['R_',                       0  ]  # generic
     ['C_',                       0  ]  # generic
 ]
@@ -49,37 +49,33 @@ fixRules = [
 
 Papa = require 'papaparse'
 fs = require 'fs'
-argv = require('minimist')(process.argv[2...])
 {version} = require './package'
+{program} = require 'commander'
 
-# console.log argv
-
-if argv.v or argv.version
-    console.log version
-    process.exit(0)
 
 config = {
     skipEmptyLines: yes
     transform: (val, col) -> val.trimLeft().trimRight()
 }
 
-try
-    bomK = Papa.parse(fs.readFileSync(argv.b).toString(), config).data if argv.b
-    posK = Papa.parse(fs.readFileSync(argv.p).toString(), config).data if argv.p
-catch e
-    console.log e.message
-    # console.log e
-    process.exit(1)
-
-unless bomK or posK
-    console.log '\nOops! No input files...'
-    process.exit(1)
-
 findColumn = (csv, name) -> csv[0].findIndex (el) -> el.toLowerCase() == name.toLowerCase()
 
 stuffed = []
 
-if bomK
+program.version require('./package.json').version
+# .option '--dev', 'Debug data'
+
+program.command 'bom <bomfile>'
+.description 'convert a BOM file from Kicad to JLCPCB'
+.action (bomfile) ->
+
+    try
+        bomK = Papa.parse(fs.readFileSync(bomfile).toString(), config).data
+    catch e
+        console.log e.message
+        # console.log e
+        process.exit(1)
+
     ref = findColumn bomK, 'Reference'
     val = findColumn bomK, 'Value'
     fp = findColumn bomK, 'Footprint'
@@ -108,7 +104,7 @@ if bomK
 
     # console.log bomJ
 
-    nfn = argv.b.replace /(.*)+\.csv$/, '$1-JLC.csv'
+    nfn = bomfile.replace /(.*)+\.csv$/, '$1-JLC.csv'
     fs.writeFileSync nfn, Papa.unparse(bomJ), 'utf-8'
 
     console.log """
@@ -116,7 +112,17 @@ if bomK
         Saved to: #{nfn}
         """
 
-if posK
+program.command 'pos <posfile>'
+.description 'convert a POS file from Kicad to JLCPCB format'
+.action (posfile) ->
+
+    try
+        posK = Papa.parse(fs.readFileSync(posfile).toString(), config).data
+    catch e
+        console.log e.message
+        # console.log e
+        process.exit(1)
+
     ref = findColumn posK, 'Ref'
     posx = findColumn posK, 'PosX'
     posy = findColumn posK, 'PosY'
@@ -162,7 +168,7 @@ if posK
         process.exit(1)
 
     # console.log posJ
-    nfn = argv.p.replace /(.*)+\.csv$/, '$1-JLC.csv'
+    nfn = posfile.replace /(.*)+\.csv$/, '$1-JLC.csv'
 
     fs.writeFileSync nfn, Papa.unparse(posJ), 'utf-8'
 
@@ -170,3 +176,9 @@ if posK
         \nProcessed POS file with #{top}/#{bottom} (top/bottom) parts, being #{topJ}/#{bottomJ} to be stuffed
         Saved to: #{nfn}
         """
+
+
+
+
+program.parse process.argv
+console.log program.opts() if program.dev
