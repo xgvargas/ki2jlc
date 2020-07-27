@@ -49,13 +49,14 @@ This converter will do two things:
 
 For this just execute
 ```bash
-ki2jlc -b your-bom-file.csv -p the-pos-file.csv
+ki2jlc bom your-bom-file.csv
+ki2jlc pos the-pos-file.csv
 ```
 This will create `your-bom-file-JLC.csv` and `the-pos-file-JLC.csv` files, they are ready to be uploaded to JLCPCB.
 
 Notice that, since this files are intended to be uploaded to JLCPCB for assembly service, both BOM and POS files only include parts that have a `LCSC` SKU code defined for it (they are the parts they will solder at the end), any other part are suppressed from the generated files.
 
-Wondering way the second step is not always easy? Well, because it's a work-in-progress. This application will know how to fix the rotation for footprints already added to the rules list. Any unknown footprint will simply be forwarded to the result file as is.
+Wondering why the second step is not always easy? Well, because it's a work-in-progress. This application will know how to fix the rotation for footprints already added to the rules list. Any unknown footprint will simply be forwarded to the result file as is.
 
 So, is up to **you** to visually check placement after upload and be sure every parts are in the correct rotation.
 

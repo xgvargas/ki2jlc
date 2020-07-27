@@ -1,6 +1,6 @@
 {
   "name": "ki2jlc",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "description": "Convert BOM and POS from kicad to JLCPCB",
   "scripts": {
     "build": "coffee -cb index.coffee",
